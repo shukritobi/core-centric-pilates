@@ -1,0 +1,207 @@
+name: Import rendered Core Centric assets
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/import-live-assets.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install browser and image tools
+        run: |
+          python -m pip install --disable-pip-version-check playwright requests pillow
+          python -m playwright install --with-deps chromium
+
+      - name: Capture rendered website imagery
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import asyncio
+          import hashlib
+          import io
+          import json
+          from pathlib import Path
+          from urllib.parse import urlparse
+
+          import requests
+          from PIL import Image, ImageStat
+          from playwright.async_api import async_playwright
+
+          targets = [
+              'https://corecentric.rezerv.co/',
+              'https://corecentric.rezerv.co/home',
+              'https://corecentric.rezerv.co/package',
+          ]
+          found: dict[str, str] = {}
+
+          async def collect() -> None:
+              async with async_playwright() as pw:
+                  browser = await pw.chromium.launch(headless=True)
+                  page = await browser.new_page(viewport={'width': 1440, 'height': 1100}, device_scale_factor=1)
+
+                  async def record_response(response):
+                      try:
+                          content_type = (await response.all_headers()).get('content-type', '').lower()
+                          if 'image/' in content_type:
+                              found.setdefault(response.url, '')
+                      except Exception:
+                          pass
+
+                  page.on('response', record_response)
+                  for target in targets:
+                      try:
+                          await page.goto(target, wait_until='networkidle', timeout=90000)
+                          await page.wait_for_timeout(2500)
+                          for fraction in (0.25, 0.5, 0.75, 1):
+                              await page.evaluate(f'window.scrollTo(0, document.body.scrollHeight * {fraction})')
+                              await page.wait_for_timeout(900)
+                          entries = await page.evaluate('''() => {
+                            const rows = [];
+                            document.querySelectorAll('img').forEach(img => {
+                              if (img.currentSrc || img.src) rows.push([img.currentSrc || img.src, img.alt || '']);
+                            });
+                            document.querySelectorAll('*').forEach(el => {
+                              const bg = getComputedStyle(el).backgroundImage;
+                              const match = bg && bg.match(/url\\(["']?(.*?)["']?\\)/);
+                              if (match) rows.push([match[1], el.getAttribute('aria-label') || 'background']);
+                            });
+                            return rows;
+                          }''')
+                          for url, context in entries:
+                              if url and url.startswith(('http://', 'https://')):
+                                  found[url] = context or found.get(url, '')
+                      except Exception as exc:
+                          print(f'Page capture failed for {target}: {exc}')
+                  await browser.close()
+
+          asyncio.run(collect())
+
+          output = Path('assets/imported')
+          output.mkdir(parents=True, exist_ok=True)
+          for old in output.glob('*'):
+              old.unlink()
+
+          session = requests.Session()
+          session.headers['User-Agent'] = 'Mozilla/5.0 (compatible; CoreCentricPreviewAssetImporter/2.0)'
+          downloaded = []
+          seen = set()
+
+          for url, context in found.items():
+              try:
+                  response = session.get(url, timeout=40, allow_redirects=True)
+                  content_type = response.headers.get('content-type', '').lower()
+                  if response.status_code != 200 or 'image' not in content_type:
+                      continue
+                  if not 6_000 <= len(response.content) <= 10_000_000:
+                      continue
+                  digest = hashlib.sha256(response.content).hexdigest()
+                  if digest in seen:
+                      continue
+                  image = Image.open(io.BytesIO(response.content))
+                  image.load()
+                  if image.width < 420 or image.height < 260:
+                      continue
+                  image = image.convert('RGB')
+                  image.thumbnail((1800, 1800), Image.Resampling.LANCZOS)
+                  stat = ImageStat.Stat(image.resize((64, 64)))
+                  complexity = round(sum(stat.stddev), 2)
+                  if complexity < 35:
+                      continue
+                  buffer = io.BytesIO()
+                  image.save(buffer, 'WEBP', quality=84, method=6)
+                  downloaded.append({
+                      'bytes': buffer.getvalue(),
+                      'source': response.url,
+                      'context': context,
+                      'width': image.width,
+                      'height': image.height,
+                      'complexity': complexity,
+                      'score': image.width * image.height * complexity,
+                  })
+                  seen.add(digest)
+              except Exception as exc:
+                  print(f'Skipped {url}: {exc}')
+
+          downloaded.sort(key=lambda item: item['score'], reverse=True)
+          downloaded = downloaded[:12]
+          manifest = []
+          for index, item in enumerate(downloaded, start=1):
+              name = f'asset-{index:02d}.webp'
+              (output / name).write_bytes(item.pop('bytes'))
+              item['file'] = name
+              manifest.append(item)
+
+          (output / 'manifest.json').write_text(
+              json.dumps(manifest, indent=2, ensure_ascii=False) + '\n', encoding='utf-8'
+          )
+          if not manifest:
+              raise SystemExit('No qualifying rendered imagery was captured.')
+
+          files = [item['file'] for item in manifest]
+          css = ['/* Generated from rendered imagery on the client-approved Core Centric Rezerv website. */']
+          css += [
+              '.hero-media {',
+              f'  background: linear-gradient(90deg, rgba(23,19,16,.82), rgba(23,19,16,.18)), url("assets/imported/{files[0]}") center/cover no-repeat !important;',
+              '}',
+              '.hero-media::before, .hero-media::after { display: none !important; }',
+          ]
+          if len(files) >= 2:
+              css += [
+                  '.studio-photo-main {',
+                  f'  background: linear-gradient(180deg, transparent 48%, rgba(35,25,18,.62)), url("assets/imported/{files[1]}") center/cover no-repeat !important;',
+                  '  color: #fff !important;',
+                  '}',
+                  '.studio-photo-main::before { display: none !important; }',
+              ]
+          if len(files) >= 3:
+              css += [
+                  '.studio-photo-social {',
+                  f'  background: linear-gradient(180deg, transparent 44%, rgba(35,25,18,.65)), url("assets/imported/{files[2]}") center/cover no-repeat !important;',
+                  '}',
+                  '.studio-photo-social::before { display: none !important; }',
+              ]
+          if len(files) >= 4:
+              css += [
+                  '.visual-art-first {',
+                  f'  background: linear-gradient(180deg, transparent 48%, rgba(73,42,24,.64)), url("assets/imported/{files[3]}") center/cover no-repeat !important;',
+                  '}',
+                  '.visual-art-first::before, .visual-art-first::after { display: none !important; }',
+              ]
+          if len(files) >= 5:
+              css += [
+                  '.confidence-photo {',
+                  f'  background: linear-gradient(180deg, transparent 46%, rgba(73,42,24,.64)), url("assets/imported/{files[4]}") center/cover no-repeat !important;',
+                  '}',
+                  '.confidence-photo::before { display: none !important; }',
+              ]
+          Path('assets-import.css').write_text('\n'.join(css) + '\n', encoding='utf-8')
+          print(f'Captured {len(manifest)} approved images')
+          PY
+
+      - name: Commit rendered assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/imported assets-import.css
+          if git diff --cached --quiet; then
+            echo "No rendered asset changes to commit"
+          else
+            git commit -m "Import rendered Core Centric assets"
+            git push
+          fi
