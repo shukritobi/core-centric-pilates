@@ -3,6 +3,12 @@ visualStyles.rel = 'stylesheet';
 visualStyles.href = 'visuals.css';
 document.head.appendChild(visualStyles);
 
+const importedPhotoStyles = document.createElement('link');
+importedPhotoStyles.rel = 'stylesheet';
+importedPhotoStyles.href = 'assets-import.css';
+importedPhotoStyles.onerror = () => importedPhotoStyles.remove();
+document.head.appendChild(importedPhotoStyles);
+
 const header = document.querySelector('[data-header]');
 const menuToggle = document.querySelector('[data-menu-toggle]');
 const nav = document.querySelector('[data-nav]');
