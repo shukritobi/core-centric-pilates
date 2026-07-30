@@ -1,0 +1,66 @@
+/* Self-contained preview artwork. Replace these CSS scenes with approved high-resolution studio and Instagram photography for production. */
+.hero-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(110deg, rgba(236,213,182,.92), rgba(255,248,237,.58) 48%, rgba(194,151,105,.72)),
+    radial-gradient(circle at 76% 28%, rgba(255,255,255,.95) 0 7%, transparent 28%),
+    linear-gradient(180deg, #ead9c2 0 60%, #c99863 60% 62%, #dcc19f 62%);
+  transform: scale(1.035);
+}
+.hero-media::before {
+  content: "";
+  position: absolute;
+  left: 18%; right: 4%; bottom: 7%; height: 34%;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 8%, rgba(109,74,43,.38) 8% 8.6%, transparent 8.6% 16%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.48) 0 9%, rgba(129,91,56,.44) 9% 11%, transparent 11% 28%);
+  transform: perspective(700px) rotateX(58deg) skewX(-5deg);
+  transform-origin: bottom;
+  border-radius: 18px;
+  opacity: .9;
+}
+.hero-media::after {
+  content: "";
+  position: absolute;
+  width: 170px; height: 280px; right: 8%; bottom: 18%;
+  border-radius: 50% 50% 12px 12px;
+  background:
+    radial-gradient(ellipse at 45% 18%, #7e8a5c 0 8%, transparent 9%),
+    radial-gradient(ellipse at 68% 28%, #8f9b69 0 9%, transparent 10%),
+    radial-gradient(ellipse at 32% 35%, #65734a 0 10%, transparent 11%),
+    linear-gradient(90deg, transparent 46%, #6f4a2e 47% 53%, transparent 54%);
+  opacity: .72;
+}
+
+.visual-main { width: 78%; height: 520px; border-radius: 220px 220px 28px 28px; box-shadow: var(--shadow); }
+.visual-float { position: absolute; right: 0; bottom: 38px; width: 44%; aspect-ratio: 1/1; border: 10px solid var(--paper); border-radius: 50%; box-shadow: var(--shadow); }
+.visual-art { position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 34px; background: linear-gradient(145deg, #f5e4ce, #d7a574); color: #fff; }
+.visual-art::before { content: ""; position: absolute; inset: 12% 10% 20%; border-radius: 48% 48% 18px 18px; background: radial-gradient(circle at 50% 24%, #f6d8c4 0 10%, transparent 11%), linear-gradient(135deg, transparent 31%, rgba(255,255,255,.74) 32% 48%, transparent 49%), linear-gradient(45deg, transparent 36%, rgba(81,55,42,.42) 37% 43%, transparent 44%); opacity: .92; }
+.visual-art::after { content: ""; position: absolute; left: 11%; right: 8%; bottom: 16%; height: 12px; background: rgba(105,70,42,.5); box-shadow: 0 28px 0 rgba(105,70,42,.24); transform: rotate(-6deg); border-radius: 999px; }
+.visual-art span { position: relative; z-index: 2; font-weight: 900; letter-spacing: .05em; line-height: 1.05; text-shadow: 0 2px 18px rgba(63,38,19,.38); }
+.visual-art-guided { padding: 20px; background: linear-gradient(145deg, #f9eee0, #bd7a4c); }
+.visual-art-guided span { font-size: .75rem; }
+
+.studio-photo { position: relative; width: 100%; overflow: hidden; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; align-items: flex-end; padding: 30px; color: #fff; }
+.studio-photo span { position: relative; z-index: 3; font-weight: 900; line-height: 1.08; letter-spacing: .04em; text-shadow: 0 4px 20px rgba(55,35,20,.35); }
+.studio-photo-main { height: 570px; background: linear-gradient(160deg, rgba(255,252,245,.92), rgba(225,197,160,.7)), linear-gradient(180deg, #efe1cc 0 60%, #c8925e 60%); color: var(--orange-dark); }
+.studio-photo-main::before { content: ""; position: absolute; inset: 32% 6% 8%; background: repeating-linear-gradient(90deg, transparent 0 11%, rgba(117,80,48,.35) 11% 12%, transparent 12% 22%), repeating-linear-gradient(0deg, rgba(255,255,255,.64) 0 12%, rgba(109,75,43,.32) 12% 14%, transparent 14% 31%); transform: perspective(650px) rotateX(56deg); transform-origin: bottom; border-radius: 18px; }
+.studio-photo-social { height: 390px; background: linear-gradient(135deg, rgba(216,107,49,.95), rgba(120,67,39,.78)), repeating-linear-gradient(45deg, #f6e1ca 0 24%, #f9f3eb 24% 48%); }
+.studio-photo-social::before { content: ""; position: absolute; width: 170px; height: 250px; right: -20px; top: 28px; border-radius: 50% 50% 20px 20px; background: radial-gradient(circle at 50% 18%, #f0c8ae 0 10%, transparent 11%), linear-gradient(145deg, transparent 33%, rgba(255,255,255,.78) 34% 50%, transparent 51%); transform: rotate(8deg); opacity: .86; }
+
+.confidence-photo { position: relative; width: 100%; height: 580px; overflow: hidden; border-radius: 220px 220px 28px 28px; display: flex; align-items: flex-end; padding: 38px; background: linear-gradient(145deg, #fff8ef, #e4b588 58%, #b96c3d); color: #fff; box-shadow: var(--shadow); }
+.confidence-photo::before { content: ""; position: absolute; width: 68%; height: 74%; left: 15%; bottom: 8%; border-radius: 50% 50% 18px 18px; background: radial-gradient(circle at 51% 16%, #f1c5aa 0 9%, transparent 10%), linear-gradient(135deg, transparent 32%, rgba(255,255,255,.8) 33% 52%, transparent 53%), linear-gradient(45deg, transparent 35%, rgba(51,44,42,.45) 36% 44%, transparent 45%); }
+.confidence-photo span { position: relative; z-index: 2; font-weight: 900; line-height: 1.08; letter-spacing: .04em; text-shadow: 0 4px 20px rgba(59,36,20,.4); }
+
+@media (max-width: 960px) {
+  .studio-photo-main { height: 430px; }
+  .studio-photo-social { height: 330px; }
+}
+@media (max-width: 640px) {
+  .visual-main { width: 86%; height: 450px; }
+  .visual-float { width: 48%; }
+  .studio-photo-main, .studio-photo-social { height: 360px; }
+  .confidence-photo { height: 460px; }
+}
