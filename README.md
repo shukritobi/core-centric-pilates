@@ -18,22 +18,23 @@ This avoids duplicated prices, out-of-sync schedules and insecure payment handli
 - `index.html`: main marketing website
 - `booking.html`: booking hand-off page
 - `styles.css`: complete responsive design system
+- `visuals.css`: lightweight self-contained preview artwork
 - `script.js`: navigation, animations and FAQ interactions
-- `assets/`: approved brand imagery supplied for the preview
+- `assets/logo.svg`: Core Centric brand logo extracted from the client-supplied reference
 - `sitemap.xml` and `robots.txt`: search-engine discovery
 - JSON-LD in `index.html`: local business and studio structured data
 
 ## Preview URL
 
-After GitHub Pages is enabled from the `main` branch root:
+The repository includes a GitHub Actions deployment workflow. Once GitHub Pages accepts the first deployment, the preview is available at:
 
 `https://shukritobi.github.io/core-centric-pilates/`
 
-GitHub: **Settings → Pages → Deploy from a branch → main / root**.
+If the first workflow requests setup, open **Settings → Pages → Source → GitHub Actions**, then run the workflow again from the Actions tab.
 
 ## Production recommendations
 
-1. Replace screenshot-derived preview crops with the original high-resolution Instagram and Rezerv assets.
+1. Replace the self-contained preview artwork with the original high-resolution Instagram and Rezerv photography.
 2. Move the canonical URL and sitemap to the final custom domain.
 3. Add verified opening hours, instructor profiles, policies and genuine customer reviews.
 4. Create dedicated local SEO pages only when there is enough unique content, for example Reformer Pilates Kota Kemuning and Beginner Pilates Shah Alam.
