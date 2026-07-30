@@ -1,11 +1,110 @@
 [
   {
-    "file": "asset-01.webp",
-    "source": "https://ik.imagekit.io/rezeve/business/6a5f9daf-0005-431e-b6eb-acba197db2ec/image/editor/806bfee0-2fae-47a0-b8a8-fffc92cb617f.jpg",
-    "context": "",
+    "source": "https://ik.imagekit.io/rezeve/business/6a5f9daf-0005-431e-b6eb-acba197db2ec/image/class/f4b547b6-9fc5-485c-8033-9a54878ecc7f.jpg",
+    "context": "Core Symphony: Wunda Chair Experience",
+    "width": 1800,
+    "height": 1350,
+    "complexity": 193.58,
+    "score": 470399400.00000006,
+    "file": "asset-01.webp"
+  },
+  {
+    "source": "https://ik.imagekit.io/rezeve/business/6a5f9daf-0005-431e-b6eb-acba197db2ec/image/class/52448315-8865-4773-a680-bafffe9e369b.jpg",
+    "context": "Core Alchemy: Reformer Transformation",
+    "width": 1800,
+    "height": 1350,
+    "complexity": 168.55,
+    "score": 409576500.0,
+    "file": "asset-02.webp"
+  },
+  {
+    "source": "https://ik.imagekit.io/rezeve/business/6a5f9daf-0005-431e-b6eb-acba197db2ec/image/class/423f6761-6ed4-45b3-8ae0-aa45fc30938e.jpg",
+    "context": "Core Refinement: Private  Pilates Experience",
+    "width": 1800,
+    "height": 1350,
+    "complexity": 164.66,
+    "score": 400123800.0,
+    "file": "asset-03.webp"
+  },
+  {
+    "source": "https://ik.imagekit.io/rezeve/business/6a5f9daf-0005-431e-b6eb-acba197db2ec/image/editor/96d24f0f-76ba-4045-9504-5779bbd64f7d.jpg",
+    "context": "banner image 5",
+    "width": 1800,
+    "height": 1012,
+    "complexity": 181.25,
+    "score": 330165000.0,
+    "file": "asset-04.webp"
+  },
+  {
+    "source": "https://ik.imagekit.io/rezeve/business/6a5f9daf-0005-431e-b6eb-acba197db2ec/image/editor/a40d9d45-240e-45ab-9854-dfc141354026.jpg",
+    "context": "banner image 3",
+    "width": 1800,
+    "height": 1012,
+    "complexity": 144.34,
+    "score": 262929744.0,
+    "file": "asset-05.webp"
+  },
+  {
+    "source": "https://ik.imagekit.io/rezeve/business/6a5f9daf-0005-431e-b6eb-acba197db2ec/image/editor/435d3059-bb95-4a3f-b908-2ab5d3c4c4e5.jpg",
+    "context": "banner image 2",
+    "width": 1800,
+    "height": 1012,
+    "complexity": 136.08,
+    "score": 247883328.00000003,
+    "file": "asset-06.webp"
+  },
+  {
+    "source": "https://ik.imagekit.io/rezeve/business/6a5f9daf-0005-431e-b6eb-acba197db2ec/image/editor/40e0c7b8-0b36-44c7-8940-a2dda7d22dfa.jpg",
+    "context": "banner image 4",
+    "width": 1800,
+    "height": 1011,
+    "complexity": 130.07,
+    "score": 236701386.0,
+    "file": "asset-07.webp"
+  },
+  {
+    "source": "https://ik.imagekit.io/rezeve/business/6a5f9daf-0005-431e-b6eb-acba197db2ec/image/locations/655b4cc4-7c4e-4c5b-b4e5-8f18fb243279.jpg",
+    "context": "Core Centric Pilates and Fitness",
+    "width": 1800,
+    "height": 900,
+    "complexity": 113.05,
+    "score": 183141000.0,
+    "file": "asset-08.webp"
+  },
+  {
+    "source": "https://ik.imagekit.io/rezeve/business/6a5f9daf-0005-431e-b6eb-acba197db2ec/image/editor/0f843808-c58f-412b-a5d5-e9864b51c99b.jpg",
+    "context": "background",
+    "width": 1800,
+    "height": 1012,
+    "complexity": 98.5,
+    "score": 179427600.0,
+    "file": "asset-09.webp"
+  },
+  {
+    "source": "https://ik.imagekit.io/rezeve/business/6a5f9daf-0005-431e-b6eb-acba197db2ec/image/editor/7cb07ab6-0fa2-4837-8f04-d0174f0354a1.jpg",
+    "context": "banner image 1",
+    "width": 1800,
+    "height": 1012,
+    "complexity": 94.46,
+    "score": 172068336.0,
+    "file": "asset-10.webp"
+  },
+  {
+    "source": "https://ik.imagekit.io/rezeve/business/6a5f9daf-0005-431e-b6eb-acba197db2ec/image/editor/2c813202-af12-44a5-a30b-63502166b083.png",
+    "context": "logo-in-header",
     "width": 516,
     "height": 484,
-    "complexity": 201.0,
-    "score": 50198544.0
+    "complexity": 200.96,
+    "score": 50188554.24,
+    "file": "asset-11.webp"
+  },
+  {
+    "source": "https://ik.imagekit.io/rezeve/business/6a5f9daf-0005-431e-b6eb-acba197db2ec/image/editor/e527ca94-9651-4e05-b943-bf60d6669b51.png",
+    "context": "background",
+    "width": 627,
+    "height": 627,
+    "complexity": 54.93,
+    "score": 21594575.97,
+    "file": "asset-12.webp"
   }
 ]

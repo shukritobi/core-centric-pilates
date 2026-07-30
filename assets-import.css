@@ -1,10 +1,22 @@
-/* Generated from imagery on the client-approved Core Centric Rezerv website. */
+/* Generated from rendered imagery on the client-approved Core Centric Rezerv website. */
 .hero-media {
   background: linear-gradient(90deg, rgba(23,19,16,.82), rgba(23,19,16,.18)), url("assets/imported/asset-01.webp") center/cover no-repeat !important;
 }
 .hero-media::before, .hero-media::after { display: none !important; }
 .studio-photo-main {
-  background: linear-gradient(180deg, transparent 48%, rgba(35,25,18,.62)), url("assets/imported/asset-01.webp") center/cover no-repeat !important;
+  background: linear-gradient(180deg, transparent 48%, rgba(35,25,18,.62)), url("assets/imported/asset-02.webp") center/cover no-repeat !important;
   color: #fff !important;
 }
 .studio-photo-main::before { display: none !important; }
+.studio-photo-social {
+  background: linear-gradient(180deg, transparent 44%, rgba(35,25,18,.65)), url("assets/imported/asset-03.webp") center/cover no-repeat !important;
+}
+.studio-photo-social::before { display: none !important; }
+.visual-art-first {
+  background: linear-gradient(180deg, transparent 48%, rgba(73,42,24,.64)), url("assets/imported/asset-04.webp") center/cover no-repeat !important;
+}
+.visual-art-first::before, .visual-art-first::after { display: none !important; }
+.confidence-photo {
+  background: linear-gradient(180deg, transparent 46%, rgba(73,42,24,.64)), url("assets/imported/asset-05.webp") center/cover no-repeat !important;
+}
+.confidence-photo::before { display: none !important; }
