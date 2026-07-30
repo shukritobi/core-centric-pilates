@@ -1,3 +1,8 @@
+const visualStyles = document.createElement('link');
+visualStyles.rel = 'stylesheet';
+visualStyles.href = 'visuals.css';
+document.head.appendChild(visualStyles);
+
 const header = document.querySelector('[data-header]');
 const menuToggle = document.querySelector('[data-menu-toggle]');
 const nav = document.querySelector('[data-nav]');
