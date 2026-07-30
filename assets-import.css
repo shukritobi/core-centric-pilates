@@ -1,0 +1,12 @@
+/* Generated from imagery on the client-approved Core Centric Rezerv website. */
+.hero-media {
+  background: linear-gradient(90deg, rgba(23,19,16,.80), rgba(23,19,16,.20)), url("assets/imported/asset-01.webp") center/cover no-repeat !important;
+}
+.hero-media::before, .hero-media::after { display: none !important; }
+.studio-photo-main { background: linear-gradient(180deg, transparent 50%, rgba(35,25,18,.58)), url("assets/imported/asset-01.webp") center/cover no-repeat !important; color: #fff !important; }
+.studio-photo-main::before { display: none !important; }
+.studio-photo-social { background: linear-gradient(180deg, transparent 45%, rgba(35,25,18,.66)), url("assets/imported/asset-01.webp") center/cover no-repeat !important; }
+.studio-photo-social::before { display: none !important; }
+.visual-art-first { background: linear-gradient(180deg, transparent 48%, rgba(73,42,24,.64)), url("assets/imported/asset-01.webp") center/cover no-repeat !important; }
+.visual-art-guided, .confidence-photo { background: linear-gradient(180deg, transparent 46%, rgba(73,42,24,.64)), url("assets/imported/asset-01.webp") center/cover no-repeat !important; }
+.visual-art::before, .visual-art::after, .confidence-photo::before { display: none !important; }
