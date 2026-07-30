@@ -1,0 +1,174 @@
+name: Import approved Core Centric assets
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/import-assets.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install importer dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4 pillow
+
+      - name: Download approved website imagery
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import hashlib
+          import html
+          import io
+          import json
+          import re
+          from pathlib import Path
+          from urllib.parse import urljoin, urlparse
+
+          import requests
+          from bs4 import BeautifulSoup
+          from PIL import Image, ImageStat
+
+          pages = [
+              'https://corecentric.rezerv.co/',
+              'https://corecentric.rezerv.co/home',
+              'https://corecentric.rezerv.co/package',
+          ]
+          headers = {
+              'User-Agent': 'Mozilla/5.0 (compatible; CoreCentricPreviewAssetImporter/1.0)'
+          }
+          session = requests.Session()
+          session.headers.update(headers)
+          candidates: dict[str, str] = {}
+
+          def add_candidate(raw: str, base: str, context: str = '') -> None:
+              raw = html.unescape(raw).replace('\\/', '/').strip('"\' ')
+              if not raw or raw.startswith(('data:', 'blob:', 'javascript:')):
+                  return
+              url = urljoin(base, raw)
+              parsed = urlparse(url)
+              if parsed.scheme not in {'http', 'https'}:
+                  return
+              low = url.lower()
+              image_hint = re.search(r'\.(?:jpe?g|png|webp|avif)(?:\?|$)', low)
+              cdn_hint = any(token in low for token in ('image', 'cdn', 'cloudfront', 'storage', 'rezerv'))
+              if image_hint or cdn_hint:
+                  candidates.setdefault(url, context[:180])
+
+          for page in pages:
+              response = session.get(page, timeout=40)
+              response.raise_for_status()
+              text = response.text
+              soup = BeautifulSoup(text, 'html.parser')
+              for tag in soup.find_all(['img', 'source']):
+                  context = tag.get('alt') or tag.get('aria-label') or ''
+                  for attr in ('src', 'data-src', 'srcset', 'data-srcset'):
+                      value = tag.get(attr)
+                      if not value:
+                          continue
+                      for part in str(value).split(','):
+                          add_candidate(part.strip().split(' ')[0], page, context)
+              for tag in soup.find_all(style=True):
+                  for found in re.findall(r'url\(["\']?([^"\')]+)', tag.get('style', '')):
+                      add_candidate(found, page)
+              for found in re.findall(r'https?:\\?/\\?/[^\s"\'<>]+', text):
+                  add_candidate(found, page)
+
+          output = Path('assets/imported')
+          output.mkdir(parents=True, exist_ok=True)
+          for old in output.glob('*'):
+              old.unlink()
+
+          downloaded = []
+          seen = set()
+          for url, context in candidates.items():
+              if len(downloaded) >= 24:
+                  break
+              try:
+                  response = session.get(url, timeout=35, allow_redirects=True)
+                  content_type = response.headers.get('content-type', '').lower()
+                  if response.status_code != 200 or 'image' not in content_type:
+                      continue
+                  if not 6_000 <= len(response.content) <= 8_000_000:
+                      continue
+                  digest = hashlib.sha256(response.content).hexdigest()
+                  if digest in seen:
+                      continue
+                  image = Image.open(io.BytesIO(response.content))
+                  image.load()
+                  if image.width < 420 or image.height < 260:
+                      continue
+                  image = image.convert('RGB')
+                  image.thumbnail((1800, 1800), Image.Resampling.LANCZOS)
+                  stat = ImageStat.Stat(image.resize((64, 64)))
+                  complexity = round(sum(stat.stddev), 2)
+                  if complexity < 38:
+                      continue
+                  buffer = io.BytesIO()
+                  image.save(buffer, 'WEBP', quality=84, method=6)
+                  name = f'asset-{len(downloaded) + 1:02d}.webp'
+                  (output / name).write_bytes(buffer.getvalue())
+                  seen.add(digest)
+                  downloaded.append({
+                      'file': name,
+                      'source': response.url,
+                      'context': context,
+                      'width': image.width,
+                      'height': image.height,
+                      'complexity': complexity,
+                      'score': image.width * image.height * complexity,
+                  })
+              except Exception as exc:
+                  print(f'Skipped {url}: {exc}')
+
+          downloaded.sort(key=lambda item: item['score'], reverse=True)
+          (output / 'manifest.json').write_text(
+              json.dumps(downloaded, indent=2, ensure_ascii=False) + '\n', encoding='utf-8'
+          )
+
+          if downloaded:
+              picks = [item['file'] for item in downloaded[:5]]
+              while len(picks) < 5:
+                  picks.append(picks[-1])
+              css = f'''/* Generated from imagery on the client-approved Core Centric Rezerv website. */
+          .hero-media {{
+            background: linear-gradient(90deg, rgba(23,19,16,.80), rgba(23,19,16,.20)), url("assets/imported/{picks[0]}") center/cover no-repeat !important;
+          }}
+          .hero-media::before, .hero-media::after {{ display: none !important; }}
+          .studio-photo-main {{ background: linear-gradient(180deg, transparent 50%, rgba(35,25,18,.58)), url("assets/imported/{picks[1]}") center/cover no-repeat !important; color: #fff !important; }}
+          .studio-photo-main::before {{ display: none !important; }}
+          .studio-photo-social {{ background: linear-gradient(180deg, transparent 45%, rgba(35,25,18,.66)), url("assets/imported/{picks[2]}") center/cover no-repeat !important; }}
+          .studio-photo-social::before {{ display: none !important; }}
+          .visual-art-first {{ background: linear-gradient(180deg, transparent 48%, rgba(73,42,24,.64)), url("assets/imported/{picks[3]}") center/cover no-repeat !important; }}
+          .visual-art-guided, .confidence-photo {{ background: linear-gradient(180deg, transparent 46%, rgba(73,42,24,.64)), url("assets/imported/{picks[4]}") center/cover no-repeat !important; }}
+          .visual-art::before, .visual-art::after, .confidence-photo::before {{ display: none !important; }}
+          '''
+              Path('assets-import.css').write_text(css, encoding='utf-8')
+          else:
+              raise SystemExit('No qualifying imagery was found on the approved Rezerv pages.')
+          PY
+
+      - name: Commit imported assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/imported assets-import.css
+          if git diff --cached --quiet; then
+            echo "No asset changes to commit"
+          else
+            git commit -m "Import approved Core Centric website assets"
+            git push
+          fi
